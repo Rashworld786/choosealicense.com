@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-for cmd in git sed; do
+for cmd in git tr; do
   if ! command -v "${cmd}" >/dev/null 2>&1; then
     echo "${cmd} is required for .devcontainer/post-create.sh"
     exit 1
