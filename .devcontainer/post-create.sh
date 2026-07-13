@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-for cmd in curl git sed; do
+for cmd in git sed; do
   if ! command -v "${cmd}" >/dev/null 2>&1; then
     echo "${cmd} is required for .devcontainer/post-create.sh"
     exit 1
@@ -45,21 +45,17 @@ fi
 echo "Initializing/updating git submodules"
 git submodule update --init --recursive
 
-versions_json="$(curl -fsSL https://pages.github.com/versions.json)" || {
-  echo "Failed to fetch https://pages.github.com/versions.json"
+ruby_version_file=".ruby-version"
+if [[ ! -f "${ruby_version_file}" ]]; then
+  echo "Could not find ${ruby_version_file}"
   exit 1
-}
+fi
 
-pages_ruby_version="$(
-  printf '%s' "${versions_json}" |
-    sed -n 's/.*"ruby"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' |
-    head -n 1
-)"
+repo_ruby_version="$(cat "${ruby_version_file}" | tr -d '[:space:]')"
+echo "Repository Ruby version: ${repo_ruby_version}"
 
-echo "GitHub Pages Ruby version: ${pages_ruby_version}"
-
-if [[ -z "${pages_ruby_version}" ]]; then
-  echo "Could not determine Ruby version from https://pages.github.com/versions.json"
+if [[ -z "${repo_ruby_version}" ]]; then
+  echo "Could not determine Ruby version from ${ruby_version_file}"
   exit 1
 fi
 
@@ -75,8 +71,8 @@ fi
 export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH"
 eval "$(rbenv init - bash)"
 
-rbenv install -s "${pages_ruby_version}"
-rbenv global "${pages_ruby_version}"
+rbenv install -s "${repo_ruby_version}"
+rbenv global "${repo_ruby_version}"
 rbenv rehash
 
 for profile in "$HOME/.bashrc" "$HOME/.zshrc"; do
