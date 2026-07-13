@@ -9,11 +9,12 @@ describe 'ruby version' do
 
   ci_config_file = '.github/workflows/test.yml'
   ci_config = YAML.load_file(ci_config_file)
-  setup_ruby_step = ci_config['jobs']['test']['steps'].find { |s| s['name'] == 'Set up Ruby' }
+  setup_ruby_step = ci_config.dig('jobs', 'test', 'steps')&.find { |s| s['name'] == 'Set up Ruby' }
   ci_ruby_version = setup_ruby_step&.dig('with', 'ruby-version').to_s
 
   context "in #{ci_config_file} and #{ruby_version_file}" do
     it 'match' do
+      expect(setup_ruby_step).not_to be_nil, "No 'Set up Ruby' step found in #{ci_config_file}"
       msg = "#{ci_ruby_version} != #{repo_ruby_version}; update #{ci_config_file} to match #{ruby_version_file}"
       expect(ci_ruby_version).to eql(repo_ruby_version), msg
     end
@@ -22,7 +23,7 @@ describe 'ruby version' do
   rubocop_config_file = '.rubocop.yml'
   rubocop_config = YAML.load_file(rubocop_config_file)
   rubocop_ruby_version = rubocop_config['AllCops']['TargetRubyVersion'].to_s
-  repo_ruby_version_minor = repo_ruby_version.match('^(\d+)\.(\d+)')[0]
+  repo_ruby_version_minor = repo_ruby_version.match('^(\d+)\.(\d+)')&.[](0)
 
   context "in #{rubocop_config_file} and #{ruby_version_file} minor version" do
     it 'match' do
