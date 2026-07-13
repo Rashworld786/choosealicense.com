@@ -51,7 +51,7 @@ if [[ ! -f "${ruby_version_file}" ]]; then
   exit 1
 fi
 
-repo_ruby_version="$(cat "${ruby_version_file}" | tr -d '[:space:]')"
+repo_ruby_version="$(tr -d '[:space:]' < "${ruby_version_file}")"
 echo "Repository Ruby version: ${repo_ruby_version}"
 
 if [[ -z "${repo_ruby_version}" ]]; then
