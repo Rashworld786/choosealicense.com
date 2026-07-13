@@ -9,7 +9,8 @@ describe 'ruby version' do
 
   ci_config_file = '.github/workflows/test.yml'
   ci_config = YAML.load_file(ci_config_file)
-  ci_ruby_version = ci_config['jobs']['test']['steps'][1]['with']['ruby-version'].to_s
+  setup_ruby_step = ci_config['jobs']['test']['steps'].find { |s| s['name'] == 'Set up Ruby' }
+  ci_ruby_version = setup_ruby_step&.dig('with', 'ruby-version').to_s
 
   context "in #{ci_config_file} and #{ruby_version_file}" do
     it 'match' do
