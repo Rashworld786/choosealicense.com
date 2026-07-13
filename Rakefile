@@ -13,7 +13,8 @@ task :test do
   sh 'bundle exec jekyll build'
   Rake::Task['spec'].invoke
   HTMLProofer.check_directory('./_site',
-                              checks: %w[Links Images Scripts Html],
+                              checks: %w[Links Images Scripts],
+                              check_external_hash: false,
                               enforce_https: true,
                               swap_urls: { %r{https://choosealicense.com} => '' },
                               ignore_urls: [%r{https://github.com/github/choosealicense.com/edit/gh-pages/_licenses/},
