@@ -2,16 +2,17 @@
 
 source 'https://rubygems.org'
 
-require 'json'
-require 'net/http'
-versions = JSON.parse(Net::HTTP.get(URI('https://pages.github.com/versions.json')))
+gem 'jekyll', '~> 4.3'
 
-gem 'github-pages', versions['github-pages']
+# Jekyll plugins listed in _config.yml
+gem 'jekyll-github-metadata', '~> 2.16'
+gem 'jekyll-redirect-from', '~> 0.16'
+gem 'jekyll-seo-tag', '~> 2.8'
+gem 'jekyll-sitemap', '~> 1.4'
 
 # Internationalization. Not on the GitHub Pages plugin whitelist, so the site is
 # built and deployed from GitHub Actions (.github/workflows/deploy.yml) rather than
-# by the native Pages build. ~> 1.5 keeps compatibility with the Jekyll version
-# pinned by the github-pages gem.
+# by the native Pages build.
 gem 'jekyll-polyglot', '~> 1.5'
 
 # https://github.com/jekyll/jekyll/issues/8523
@@ -29,4 +30,5 @@ group :test do
   gem 'rake'
   gem 'rspec'
   gem 'rubocop'
+  gem 'safe_yaml', '~> 1.0'
 end

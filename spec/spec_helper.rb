@@ -4,6 +4,7 @@ require 'jekyll'
 require 'json'
 require 'licensee'
 require 'open-uri'
+require 'safe_yaml'
 
 module SpecHelper
   class << self
